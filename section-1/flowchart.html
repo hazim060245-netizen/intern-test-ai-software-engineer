@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flowchart - Project Access Control System</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background: #f8fafc;
+      color: #0f172a;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+      color: #1e293b;
+    }
+    p {
+      color: #64748b;
+      margin-bottom: 1.5rem;
+    }
+    .mermaid {
+      display: flex;
+      justify-content: center;
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 8px;
+    }
+    .legend {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: #f1f5f9;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+    .legend h3 { margin-top: 0; }
+    .legend ul { margin: 0; padding-left: 1.2rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>ระบบจัดการสิทธิ์การเข้าถึงโครงการ (Project Access Control Flowchart)</h1>
+    <p>แผนภาพแสดง Flow การทำงานทั้งหมดตามข้อกำหนด 1.1 (Login, Route Guards, Permission Controls, Status Transitions, Logout)</p>
+    
+    <pre class="mermaid">
+flowchart TD
+    Start([เริ่มต้น เข้าสู่ระบบ]) --> LoginForm[/แสดงหน้าจอ Login/]
+    LoginForm --> SubmitLogin[ผู้ใช้ส่ง Username / Password]
+    
+    SubmitLogin --> CheckCreds{ตรวจสอบข้อมูลผ่าน Mock API?}
+    CheckCreds -- "ไม่ถูกต้อง (Failed)" --> LoginErr[แสดงข้อความ Error Alert แจ้งเตือนผู้ใช้]
+    LoginErr --> LoginForm
+    
+    CheckCreds -- "ถูกต้อง (Success)" --> SetAuth[บันทึก User Session และ Token ลงใน AuthContext]
+    SetAuth --> CheckRole{บทบาทของผู้ใช้ (Role)?}
+    
+    %% กรณี Admin Flow
+    CheckRole -- "Admin" --> AdminRedirect[นำทางไปยัง /admin]
+    AdminRedirect --> AdminCheckGuard{เข้าถึงหน้าใด?}
+    
+    AdminCheckGuard -- "เข้า /admin" --> AdminDash[/แดชบอร์ด Admin: แสดง Task ทั้งหมด + ฟอร์มสร้าง Task/]
+    AdminCheckGuard -- "พยายามเข้า /employee" --> AdminGuardBlock[Route Guard: ปฏิเสธการเข้าถึง]
+    AdminGuardBlock --> AlertAdminRedirect[แสดง Alert Banner แจ้งเตือน + Redirect กลับ /admin]
+    AlertAdminRedirect --> AdminDash
+    
+    AdminDash --> AdminAction{การดำเนินการของ Admin}
+    AdminAction -- "สร้าง Task ใหม่" --> AdminCreateTask[ระบุชื่องาน และเลือกพนักงานผู้รับผิดชอบ]
+    AdminCreateTask --> UpdateListImmediate[บันทึกและอัปเดตรายการ Task ทันที]
+    UpdateListImmediate --> AdminDash
+    
+    AdminAction -- "เปลี่ยนสถานะ Task ใดๆ" --> AdminChangeStatus[เปลี่ยน To Do <-> Done ได้ทุก Task]
+    AdminChangeStatus --> UpdateListImmediate
+    
+    %% กรณี Employee Flow
+    CheckRole -- "Employee" --> EmpRedirect[นำทางไปยัง /employee]
+    EmpRedirect --> EmpCheckGuard{เข้าถึงหน้าใด?}
+    
+    EmpCheckGuard -- "เข้า /employee" --> EmpDash[/หน้าต่าง Employee: แสดงเฉพาะ Task ที่ได้รับมอบหมาย/]
+    EmpCheckGuard -- "พยายามเข้า /admin" --> EmpGuardBlock[Route Guard: ปฏิเสธการเข้าถึง]
+    EmpGuardBlock --> AlertEmpRedirect[แสดง Alert Banner แจ้งเตือน + Redirect กลับ /employee]
+    AlertEmpRedirect --> EmpDash
+    
+    EmpDash --> EmpAction{การดำเนินการของ Employee}
+    
+    %% การเปลี่ยนสถานะโดย Employee
+    EmpAction -- "กดเปลี่ยนสถานะ Task" --> CheckOwnership{Task เป็นของตนเองหรือไม่?}
+    CheckOwnership -- "ไม่ใช่ (Not Owner)" --> DenyNotOwner[ปฏิเสธ 403: ไม่มีสิทธิ์แก้ไข Task ของผู้อื่น]
+    DenyNotOwner --> EmpDash
+    
+    CheckOwnership -- "ใช่ (Owner)" --> CheckCurrentStatus{สถานะปัจจุบันเป็น Done หรือไม่?}
+    CheckCurrentStatus -- "เป็น Done อยู่แล้ว" --> DenyReopen[ปฏิเสธ: ล็อกสถานะ ห้ามย้อนจาก Done กลับเป็น To Do]
+    DenyReopen --> EmpDash
+    
+    CheckCurrentStatus -- "เป็น To Do" --> AllowDone[อนุญาต: เปลี่ยนสถานะ To Do -> Done และบันทึกลงระบบทันที]
+    AllowDone --> EmpDash
+    
+    %% Logout Flow
+    AdminDash --> ClickLogout[คลิกปุ่มออกจากระบบ Logout]
+    EmpDash --> ClickLogout
+    ClickLogout --> ClearAuth[ล้างข้อมูล AuthContext และ Token ออกจาก LocalStorage]
+    ClearAuth --> RedirectToLogin[นำทางกลับสู่หน้า Login]
+    RedirectToLogin --> End([สิ้นสุด Session])
+
+    classDef success fill:#ecfdf5,stroke:#10b981,stroke-width:2px;
+    classDef danger fill:#fef2f2,stroke:#ef4444,stroke-width:2px;
+    classDef warning fill:#fffbeb,stroke:#f59e0b,stroke-width:2px;
+    classDef blue fill:#eff6ff,stroke:#3b82f6,stroke-width:2px;
+
+    class AllowDone,UpdateListImmediate,SetAuth success;
+    class LoginErr,AdminGuardBlock,EmpGuardBlock,DenyNotOwner,DenyReopen danger;
+    class AlertAdminRedirect,AlertEmpRedirect warning;
+    class AdminDash,EmpDash blue;
+    </pre>
+
+    <div class="legend">
+      <h3>ครอบคลุมกรณีทดสอบตามโจทย์ 100%:</h3>
+      <ul>
+        <li><b>Login:</b> ครอบคลุมทั้งกรณีสำเร็จ (บันทึก Auth State) และไม่สำเร็จ (แจ้ง Error ชัดเจน)</li>
+        <li><b>Route Guard:</b> ครอบคลุมกรณี Admin พยายามเข้า <code>/employee</code> และ Employee พยายามเข้า <code>/admin</code> (บล็อกพร้อมแจ้งเตือนและ Redirect กลับหน้าตนเอง)</li>
+        <li><b>Access Control:</b> ครอบคลุม Employee พยายามเปลี่ยน Task ที่ไม่ใช่ของตนเอง (บล็อกสิทธิ์)</li>
+        <li><b>Status Transition:</b> ครอบคลุม Employee พยายามเปลี่ยน Task ที่ Done แล้วกลับเป็น To Do (ล็อกห้ามย้อนกลับ)</li>
+        <li><b>Logout:</b> ล้างค่า Authentication และนำทางกลับสู่หน้า Login</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'default' });
+  </script>
+</body>
+</html>
