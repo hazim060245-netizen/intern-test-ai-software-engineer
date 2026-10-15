@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import {
   CheckCircle2,
   Clock,
+  Clock3,
   Check,
   Filter,
   Loader2,
@@ -12,7 +13,9 @@ import {
   RefreshCw,
   FolderKanban,
   Lock,
-  Sparkles
+  Sparkles,
+  ShieldCheck,
+  Briefcase
 } from 'lucide-react';
 
 export default function EmployeePage() {
@@ -80,7 +83,7 @@ export default function EmployeePage() {
         <div className="page-header-banner">
           <div>
             <div className="section-pill-tag">
-              <span>🐾 PAWTRY TEAM WORKSPACE</span>
+              <span>PAWTRY TEAM WORKSPACE</span>
             </div>
             <h2 className="page-title">พื้นที่ทำงานพนักงาน (Employee Portal)</h2>
             <p className="page-subtitle">
@@ -170,7 +173,10 @@ export default function EmployeePage() {
             <div className="card-header-title">
               <FolderKanban size={22} className="icon-pawtry-navy" />
               <h3>รายการงานที่ได้รับมอบหมาย</h3>
-              <span className="permission-pill employee">💼 เฉพาะงานของฉัน</span>
+              <span className="permission-pill employee">
+                <Briefcase size={11} style={{ display: 'inline', marginRight: '4px' }} />
+                เฉพาะงานของฉัน
+              </span>
             </div>
 
             <div className="filter-group">
@@ -221,7 +227,7 @@ export default function EmployeePage() {
                   <tr>
                     <th style={{ width: '80px' }}>ID</th>
                     <th>ชื่องาน (Task Title)</th>
-                    <th style={{ width: '140px' }}>สถานะ</th>
+                    <th style={{ width: '150px' }}>สถานะ</th>
                     <th style={{ width: '180px' }}>วันที่มอบหมาย</th>
                     <th style={{ width: '180px', textAlign: 'center' }}>การดำเนินการ</th>
                   </tr>
@@ -243,14 +249,24 @@ export default function EmployeePage() {
                           <span
                             className={`status-badge-pawtry ${isDone ? 'status-done' : 'status-todo'}`}
                           >
-                            {isDone ? '✓ Done' : '⏳ To Do'}
+                            {isDone ? (
+                              <>
+                                <CheckCircle2 size={13} className="badge-svg-icon done" />
+                                <span>Done</span>
+                              </>
+                            ) : (
+                              <>
+                                <Clock3 size={13} className="badge-svg-icon todo" />
+                                <span>To Do</span>
+                              </>
+                            )}
                           </span>
                         </td>
                         <td className="date-cell">{task.created_at}</td>
                         <td style={{ textAlign: 'center' }}>
                           {isDone ? (
                             <div className="locked-done-badge" title="งานเสร็จสิ้นแล้ว ไม่สามารถย้อนกลับได้ตามกฎระบบ">
-                              <Lock size={14} />
+                              <Lock size={13} />
                               <span>เสร็จสิ้น (ล็อก)</span>
                             </div>
                           ) : (

@@ -5,7 +5,8 @@ export const INITIAL_USERS = [
     username: 'admin',
     name: 'Somkiat Admin',
     role: 'admin',
-    avatar: '👨‍💼',
+    initials: 'SK',
+    avatarBg: 'linear-gradient(135deg, #ff7700 0%, #ea580c 100%)',
     department: 'Management'
   },
   {
@@ -13,7 +14,8 @@ export const INITIAL_USERS = [
     username: 'employee1',
     name: 'Somchai Prasert',
     role: 'employee',
-    avatar: '👨‍💻',
+    initials: 'SP',
+    avatarBg: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
     department: 'Software Engineering'
   },
   {
@@ -21,7 +23,8 @@ export const INITIAL_USERS = [
     username: 'employee2',
     name: 'Somsri Sukjai',
     role: 'employee',
-    avatar: '👩‍💻',
+    initials: 'SS',
+    avatarBg: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
     department: 'Quality Assurance'
   }
 ];

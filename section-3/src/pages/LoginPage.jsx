@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { INITIAL_USERS } from '../mock/mockData';
-import { LogIn, AlertCircle, Loader2, Sparkles, User, Shield, ArrowRight } from 'lucide-react';
+import { LogIn, AlertCircle, Loader2, Sparkles, User, Shield, ArrowRight, AlertTriangle, Briefcase } from 'lucide-react';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('admin');
@@ -47,12 +47,10 @@ export default function LoginPage() {
 
   return (
     <div className="login-container">
-      {/* Decorative Brand Circles */}
       <div className="bg-glow-orange"></div>
       <div className="bg-glow-navy"></div>
 
       <div className="login-card">
-        {/* Brand Header */}
         <div className="login-header">
           <div className="brand-logo-container large">
             <span className="paw-icon">🐾</span>
@@ -61,7 +59,7 @@ export default function LoginPage() {
           </div>
 
           <div className="company-tagline-pill">
-            <span>🐾 PAWTRY INTERNAL SYSTEM</span>
+            <span>PAWTRY INTERNAL SYSTEM</span>
           </div>
 
           <h2 className="login-title">ระบบจัดการสิทธิ์และงานโครงการ</h2>
@@ -80,7 +78,7 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
             <label htmlFor="username-input">
-              <User size={16} /> ชื่อผู้ใช้งาน (Username)
+              <User size={15} /> ชื่อผู้ใช้งาน (Username)
             </label>
             <input
               id="username-input"
@@ -93,7 +91,6 @@ export default function LoginPage() {
             />
           </div>
 
-          {/* ส้ม Pawtry Pill Button */}
           <button
             type="submit"
             id="login-submit-button"
@@ -129,11 +126,26 @@ export default function LoginPage() {
                 onClick={() => handleQuickSelect(u)}
                 disabled={loading}
               >
-                <span className="acc-avatar">{u.avatar}</span>
+                <div
+                  className="quick-avatar-initials"
+                  style={{ background: u.avatarBg }}
+                >
+                  {u.initials}
+                </div>
                 <div className="acc-meta">
                   <span className="acc-username">{u.username}</span>
                   <span className={`acc-badge-pill ${u.role === 'admin' ? 'admin' : 'employee'}`}>
-                    {u.role === 'admin' ? 'Admin' : 'Employee'}
+                    {u.role === 'admin' ? (
+                      <>
+                        <Shield size={10} />
+                        <span>Admin</span>
+                      </>
+                    ) : (
+                      <>
+                        <Briefcase size={10} />
+                        <span>Employee</span>
+                      </>
+                    )}
                   </span>
                 </div>
               </button>
@@ -148,10 +160,14 @@ export default function LoginPage() {
               }}
               disabled={loading}
             >
-              <span className="acc-avatar">⚠️</span>
+              <div className="quick-avatar-initials error">
+                <AlertTriangle size={15} />
+              </div>
               <div className="acc-meta">
                 <span className="acc-username">invalid_user</span>
-                <span className="acc-badge-pill error">ทดสอบ Error</span>
+                <span className="acc-badge-pill error">
+                  <span>ทดสอบ Error</span>
+                </span>
               </div>
             </button>
           </div>

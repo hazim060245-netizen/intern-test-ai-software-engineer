@@ -6,6 +6,7 @@ import {
   PlusCircle,
   CheckCircle2,
   Clock,
+  Clock3,
   User,
   ListTodo,
   Loader2,
@@ -13,7 +14,8 @@ import {
   RefreshCw,
   FolderGit2,
   ShieldCheck,
-  Check
+  Check,
+  RotateCcw
 } from 'lucide-react';
 
 export default function AdminPage() {
@@ -98,9 +100,8 @@ export default function AdminPage() {
     }
   };
 
-  const getAssigneeName = (assignedToId) => {
-    const emp = employees.find((e) => e.id === assignedToId);
-    return emp ? `${emp.name} (${emp.username})` : `พนักงานรหัส #${assignedToId}`;
+  const getAssignee = (assignedToId) => {
+    return employees.find((e) => e.id === assignedToId);
   };
 
   const todoCount = tasks.filter((t) => t.status === 'To Do').length;
@@ -111,11 +112,10 @@ export default function AdminPage() {
       <Navbar />
 
       <main className="main-content">
-        {/* Banner Section ด้านบนสไตล์ Pawtry */}
         <div className="page-header-banner">
           <div>
             <div className="section-pill-tag">
-              <span>🐾 PAWTRY MANAGEMENT CONSOLE</span>
+              <span>PAWTRY MANAGEMENT CONSOLE</span>
             </div>
             <h2 className="page-title">แดชบอร์ดผู้ดูแลระบบ (Admin Portal)</h2>
             <p className="page-subtitle">
@@ -148,7 +148,7 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* แถบสถิติสไตล์ส้ม Pawtry Thailand (ตามหน้าเว็บจริง) */}
+        {/* แถบสถิติสไตล์ส้ม Pawtry Thailand */}
         <div className="pawtry-stats-strip">
           <div className="stats-strip-item">
             <div className="strip-icon-box">
@@ -204,7 +204,7 @@ export default function AdminPage() {
               <PlusCircle size={22} className="icon-pawtry-orange" />
               <h3>สร้าง Task ใหม่ (มอบหมายงาน)</h3>
             </div>
-            <span className="permission-pill admin">👑 สิทธิ์: Admin เท่านั้น</span>
+            <span className="permission-pill admin">สิทธิ์: Admin เท่านั้น</span>
           </div>
 
           <form onSubmit={handleCreateTask} className="create-task-form">
@@ -290,15 +290,17 @@ export default function AdminPage() {
                     <th style={{ width: '80px' }}>ID</th>
                     <th>ชื่องาน (Task Title)</th>
                     <th style={{ width: '240px' }}>ผู้รับผิดชอบ</th>
-                    <th style={{ width: '140px' }}>สถานะ</th>
+                    <th style={{ width: '150px' }}>สถานะ</th>
                     <th style={{ width: '180px' }}>วันที่สร้าง</th>
-                    <th style={{ width: '160px', textAlign: 'center' }}>การจัดการ (Admin)</th>
+                    <th style={{ width: '170px', textAlign: 'center' }}>การจัดการ (Admin)</th>
                   </tr>
                 </thead>
                 <tbody>
                   {tasks.map((task) => {
                     const isUpdating = updatingTaskId === task.id;
                     const isDone = task.status === 'Done';
+                    const emp = getAssignee(task.assigned_to);
+
                     return (
                       <tr key={task.id} className={isDone ? 'row-done' : ''}>
                         <td className="task-id">#{task.id}</td>
@@ -309,13 +311,30 @@ export default function AdminPage() {
                         </td>
                         <td>
                           <div className="assignee-badge">
-                            <User size={14} />
-                            <span>{getAssigneeName(task.assigned_to)}</span>
+                            <div
+                              className="assignee-mini-avatar"
+                              style={{ background: emp?.avatarBg || '#182b52' }}
+                            >
+                              {emp?.initials || 'U'}
+                            </div>
+                            <span className="assignee-text">
+                              {emp ? emp.name : `#${task.assigned_to}`}
+                            </span>
                           </div>
                         </td>
                         <td>
                           <span className={`status-badge-pawtry ${isDone ? 'status-done' : 'status-todo'}`}>
-                            {isDone ? '✓ Done' : '⏳ To Do'}
+                            {isDone ? (
+                              <>
+                                <CheckCircle2 size={13} className="badge-svg-icon done" />
+                                <span>Done</span>
+                              </>
+                            ) : (
+                              <>
+                                <Clock3 size={13} className="badge-svg-icon todo" />
+                                <span>To Do</span>
+                              </>
+                            )}
                           </span>
                         </td>
                         <td className="date-cell">{task.created_at}</td>
@@ -329,9 +348,15 @@ export default function AdminPage() {
                             {isUpdating ? (
                               <Loader2 size={14} className="spinner" />
                             ) : isDone ? (
-                              'ย้อนเป็น To Do'
+                              <>
+                                <RotateCcw size={13} />
+                                <span>ย้อนเป็น To Do</span>
+                              </>
                             ) : (
-                              'เปลี่ยนเป็น Done'
+                              <>
+                                <Check size={14} />
+                                <span>เปลี่ยนเป็น Done</span>
+                              </>
                             )}
                           </button>
                         </td>

@@ -122,13 +122,24 @@
   align-items: center;
   gap: 0.75rem;
   background: #f8fafc;
-  padding: 0.4rem 0.85rem;
+  padding: 0.35rem 0.85rem;
   border-radius: var(--radius-pill);
   border: 1px solid #edf2f7;
 }
 
-.user-avatar {
-  font-size: 1.45rem;
+.user-initials-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  flex-shrink: 0;
 }
 
 .user-meta {
@@ -138,7 +149,7 @@
 
 .user-name {
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 700;
   color: #182b52;
 }
 
@@ -149,9 +160,12 @@
 }
 
 .role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
   font-size: 0.7rem;
   font-weight: 700;
-  padding: 0.1rem 0.5rem;
+  padding: 0.1rem 0.55rem;
   border-radius: var(--radius-pill);
 }
 
@@ -304,7 +318,7 @@
 }
 
 /* ==============================================================================
-   Pawtry Orange Stats Strip (ถอดแบบแถบสีส้มจากหน้าเว็บจริง)
+   Pawtry Orange Stats Strip
 ============================================================================== */
 .pawtry-stats-strip {
   background: linear-gradient(100deg, #ff7700 0%, #ff5500 100%);
@@ -505,7 +519,7 @@
 .flex-1 { flex: 1; }
 .flex-2 { flex: 2; }
 
-/* Pawtry Orange Pill Button (ถอดแบบปุ่ม "ปรึกษาฟรี" / "เริ่มต้นสร้างแบรนด์ ->") */
+/* Pawtry Orange Pill Button */
 .btn-pawtry-orange {
   display: inline-flex;
   align-items: center;
@@ -592,36 +606,65 @@
 .assignee-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.5rem;
   background: #f8fafc;
   border: 1px solid #eef2f6;
-  padding: 0.35rem 0.75rem;
+  padding: 0.3rem 0.75rem;
   border-radius: var(--radius-pill);
-  font-size: 0.825rem;
-  font-weight: 500;
-  color: #334155;
 }
 
-/* Status Badges */
+.assignee-mini-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.assignee-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #182b52;
+}
+
+/* Professional Status Badges (Vector Icons) */
 .status-badge-pawtry {
   display: inline-flex;
   align-items: center;
+  gap: 0.4rem;
   font-size: 0.775rem;
   font-weight: 700;
-  padding: 0.3rem 0.75rem;
+  padding: 0.3rem 0.85rem;
   border-radius: var(--radius-pill);
+}
+
+.badge-svg-icon {
+  flex-shrink: 0;
+}
+
+.badge-svg-icon.todo {
+  color: #ea580c;
+}
+
+.badge-svg-icon.done {
+  color: #059669;
 }
 
 .status-todo {
   background: #fff7ed;
   color: #c2410c;
-  border: 1px solid #fed7aa;
+  border: 1.5px solid #fed7aa;
 }
 
 .status-done {
   background: #ecfdf5;
   color: #047857;
-  border: 1px solid #a7f3d0;
+  border: 1.5px solid #a7f3d0;
 }
 
 .date-cell {
@@ -632,6 +675,9 @@
 
 /* Action Buttons */
 .btn-action-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   font-size: 0.825rem;
   font-weight: 700;
   padding: 0.45rem 1rem;
@@ -737,7 +783,6 @@
   overflow: hidden;
 }
 
-/* Glow Elements */
 .bg-glow-orange {
   position: absolute;
   top: -15%;
@@ -842,10 +887,10 @@
 .quick-acc-btn {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.65rem;
   background: #fbfbfd;
   border: 1.5px solid #edf2f7;
-  padding: 0.6rem 0.75rem;
+  padding: 0.65rem 0.8rem;
   border-radius: 14px;
   text-align: left;
   transition: all 0.2s ease;
@@ -867,8 +912,25 @@
   border-color: #fecdd3;
 }
 
-.acc-avatar {
-  font-size: 1.35rem;
+.quick-avatar-initials {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  flex-shrink: 0;
+}
+
+.quick-avatar-initials.error {
+  background: #fee2e2;
+  color: #e11d48;
+  box-shadow: none;
 }
 
 .acc-meta {
@@ -883,6 +945,9 @@
 }
 
 .acc-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
   font-size: 0.68rem;
   font-weight: 700;
   border-radius: var(--radius-pill);

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, ShieldAlert, Sparkles } from 'lucide-react';
+import { LogOut, ShieldAlert, Shield, User, Briefcase } from 'lucide-react';
 
 export default function Navbar() {
   const { user, logout, routeNotice, clearRouteNotice } = useAuth();
@@ -15,7 +15,7 @@ export default function Navbar() {
     <>
       <header className="navbar">
         <div className="navbar-container">
-          {/* Logo & Brand Identity สไตล์ Pawtry Thailand */}
+          {/* Logo & Brand Identity */}
           <div className="navbar-brand">
             <div className="brand-logo-container">
               <span className="paw-icon">🐾</span>
@@ -32,21 +32,35 @@ export default function Navbar() {
           {user && (
             <div className="navbar-user">
               <div className="user-profile-card">
-                <span className="user-avatar">{user.avatar || '👤'}</span>
+                <div
+                  className="user-initials-avatar"
+                  style={{ background: user.avatarBg || '#ff7700' }}
+                >
+                  {user.initials || 'US'}
+                </div>
                 <div className="user-meta">
                   <span className="user-name">{user.name}</span>
                   <div className="user-tags">
                     <span className={`role-badge ${user.role === 'admin' ? 'role-admin' : 'role-employee'}`}>
-                      {user.role === 'admin' ? '👑 Admin' : '💼 Employee'}
+                      {user.role === 'admin' ? (
+                        <>
+                          <Shield size={11} />
+                          <span>Admin</span>
+                        </>
+                      ) : (
+                        <>
+                          <Briefcase size={11} />
+                          <span>Employee</span>
+                        </>
+                      )}
                     </span>
                     <span className="department-tag">{user.department}</span>
                   </div>
                 </div>
               </div>
 
-              {/* ปุ่ม Logout สไตล์ส้ม Pawtry */}
               <button onClick={handleLogout} className="btn-logout" title="ออกจากระบบ">
-                <LogOut size={16} />
+                <LogOut size={15} />
                 <span>ออกจากระบบ</span>
               </button>
             </div>
