@@ -1,20 +1,29 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Prompt:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --font-family: 'Plus Jakarta Sans', 'Prompt', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family: 'Kanit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   
-  --bg-main: #f8fafc;
-  --bg-card: #ffffff;
-  --border-color: #e2e8f0;
-  --border-subtle: #edf2f7;
+  /* Pawtry CI Brand Colors */
+  --pawtry-orange: #ff7700;
+  --pawtry-orange-hover: #e86400;
+  --pawtry-orange-light: #fff7ed;
+  --pawtry-orange-subtle: #ffedd5;
+  --pawtry-orange-dark: #c2410c;
 
-  --text-main: #0f172a;
+  --pawtry-navy: #182b52;
+  --pawtry-navy-dark: #0f1c38;
+  --pawtry-navy-light: #2a437c;
+  --pawtry-blue-soft: #eff6ff;
+
+  --bg-main: #fbfbfd;
+  --bg-card: #ffffff;
+  --border-color: #f1f3f7;
+  --border-subtle: #e8ecf2;
+
+  --text-main: #182b52;
+  --text-body: #475569;
   --text-muted: #64748b;
   --text-light: #94a3b8;
-
-  --primary: #3b82f6;
-  --primary-hover: #2563eb;
-  --primary-light: #eff6ff;
 
   --success: #10b981;
   --success-hover: #059669;
@@ -26,9 +35,15 @@
   --danger: #ef4444;
   --danger-light: #fef2f2;
 
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-pill: 9999px;
+
+  --shadow-sm: 0 2px 8px rgba(24, 43, 82, 0.04);
+  --shadow-md: 0 8px 24px rgba(24, 43, 82, 0.07);
+  --shadow-lg: 0 16px 36px rgba(24, 43, 82, 0.1);
+  --shadow-orange: 0 8px 20px rgba(255, 119, 0, 0.28);
 }
 
 * {

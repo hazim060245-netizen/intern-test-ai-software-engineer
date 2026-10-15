@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { INITIAL_USERS } from '../mock/mockData';
-import { LogIn, AlertCircle, Loader2, Sparkles, User, Shield } from 'lucide-react';
+import { LogIn, AlertCircle, Loader2, Sparkles, User, Shield, ArrowRight } from 'lucide-react';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('admin');
@@ -11,7 +11,6 @@ export default function LoginPage() {
   const { login, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
-  // หากล็อกอินอยู่แล้ว ให้ไปที่หน้าตามบทบาท
   if (isAuthenticated && user) {
     if (user.role === 'admin') navigate('/admin');
     else navigate('/employee');
@@ -29,7 +28,6 @@ export default function LoginPage() {
 
     try {
       const loggedInUser = await login(username);
-      // นำทางไปยังหน้าของ Role นั้น ๆ
       if (loggedInUser.role === 'admin') {
         navigate('/admin');
       } else {
@@ -49,14 +47,26 @@ export default function LoginPage() {
 
   return (
     <div className="login-container">
+      {/* Decorative Brand Circles */}
+      <div className="bg-glow-orange"></div>
+      <div className="bg-glow-navy"></div>
+
       <div className="login-card">
+        {/* Brand Header */}
         <div className="login-header">
-          <div className="login-icon-box">
-            <Shield size={32} className="shield-icon" />
+          <div className="brand-logo-container large">
+            <span className="paw-icon">🐾</span>
+            <span className="brand-pawtry">Pawtry</span>
+            <span className="brand-thailand">thailand</span>
           </div>
-          <h2>เข้าสู่ระบบเพื่อใช้งาน</h2>
+
+          <div className="company-tagline-pill">
+            <span>🐾 PAWTRY INTERNAL SYSTEM</span>
+          </div>
+
+          <h2 className="login-title">ระบบจัดการสิทธิ์และงานโครงการ</h2>
           <p className="login-desc">
-            Project Access Control System · แบบทดสอบคัดเลือกนักศึกษาฝึกงาน
+            Project Access Control · เข้าสู่ระบบเพื่อจัดการภารกิจและโครงการของคุณ
           </p>
         </div>
 
@@ -83,21 +93,22 @@ export default function LoginPage() {
             />
           </div>
 
+          {/* ส้ม Pawtry Pill Button */}
           <button
             type="submit"
             id="login-submit-button"
-            className="btn-primary"
+            className="btn-pawtry-orange"
             disabled={loading}
           >
             {loading ? (
               <>
                 <Loader2 className="spinner" size={18} />
-                <span>กำลังตรวจสอบข้อมูลผ่าน Mock API...</span>
+                <span>กำลังเข้าสู่ระบบผ่าน Mock API...</span>
               </>
             ) : (
               <>
-                <LogIn size={18} />
-                <span>เข้าสู่ระบบ</span>
+                <span>เข้าสู่ระบบเพื่อใช้งาน</span>
+                <ArrowRight size={18} />
               </>
             )}
           </button>
@@ -105,8 +116,8 @@ export default function LoginPage() {
 
         <div className="quick-accounts-section">
           <div className="quick-accounts-title">
-            <Sparkles size={14} />
-            <span>บัญชีสำหรับทดสอบ (คลิกเพื่อเลือกทันที):</span>
+            <Sparkles size={14} className="sparkle-icon" />
+            <span>เลือกบัญชีทดสอบด่วน (Quick Test Accounts):</span>
           </div>
 
           <div className="quick-account-buttons">
@@ -121,14 +132,13 @@ export default function LoginPage() {
                 <span className="acc-avatar">{u.avatar}</span>
                 <div className="acc-meta">
                   <span className="acc-username">{u.username}</span>
-                  <span className="acc-badge">
+                  <span className={`acc-badge-pill ${u.role === 'admin' ? 'admin' : 'employee'}`}>
                     {u.role === 'admin' ? 'Admin' : 'Employee'}
                   </span>
                 </div>
               </button>
             ))}
 
-            {/* ปุ่มทดสอบกรณี Username ที่ไม่มีในระบบ (Error test case) */}
             <button
               type="button"
               className={`quick-acc-btn error-case ${username === 'invalid_user' ? 'active' : ''}`}
@@ -141,7 +151,7 @@ export default function LoginPage() {
               <span className="acc-avatar">⚠️</span>
               <div className="acc-meta">
                 <span className="acc-username">invalid_user</span>
-                <span className="acc-badge error">ทดสอบ Error</span>
+                <span className="acc-badge-pill error">ทดสอบ Error</span>
               </div>
             </button>
           </div>

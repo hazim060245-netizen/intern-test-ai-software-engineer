@@ -11,19 +11,19 @@ import {
   AlertCircle,
   RefreshCw,
   FolderKanban,
-  Lock
+  Lock,
+  Sparkles
 } from 'lucide-react';
 
 export default function EmployeePage() {
   const { user } = useAuth();
   const [tasks, setTasks] = useState([]);
-  const [filter, setFilter] = useState('All'); // 'All' | 'To Do' | 'Done'
+  const [filter, setFilter] = useState('All');
   const [loading, setLoading] = useState(true);
   const [updatingTaskId, setUpdatingTaskId] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  // โหลด Tasks เฉพาะของผู้ใช้คนนี้
   const fetchMyTasks = async () => {
     setLoading(true);
     setErrorMessage('');
@@ -41,7 +41,6 @@ export default function EmployeePage() {
     fetchMyTasks();
   }, []);
 
-  // Employee เปลี่ยนสถานะ To Do -> Done เท่านั้น
   const handleMarkDone = async (task) => {
     if (task.status === 'Done') return;
 
@@ -52,12 +51,11 @@ export default function EmployeePage() {
     try {
       const res = await api.updateTaskStatus(task.id, 'Done', user);
 
-      // อัปเดตรายการทันที
       setTasks((prev) =>
         prev.map((t) => (t.id === task.id ? res.task : t))
       );
 
-      setSuccessMessage(`อัปเดตงาน "${task.title}" เป็น Done เรียบร้อยแล้ว!`);
+      setSuccessMessage(`อัปเดตภารกิจ "${task.title}" เป็น Done เรียบร้อยแล้ว!`);
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
       setErrorMessage(err.message || 'เกิดข้อผิดพลาดในการเปลี่ยนสถานะงาน');
@@ -66,7 +64,6 @@ export default function EmployeePage() {
     }
   };
 
-  // กรอง Tasks ตามสถานะ
   const filteredTasks = tasks.filter((t) => {
     if (filter === 'All') return true;
     return t.status === filter;
@@ -80,8 +77,11 @@ export default function EmployeePage() {
       <Navbar />
 
       <main className="main-content">
-        <div className="page-header">
+        <div className="page-header-banner">
           <div>
+            <div className="section-pill-tag">
+              <span>🐾 PAWTRY TEAM WORKSPACE</span>
+            </div>
             <h2 className="page-title">พื้นที่ทำงานพนักงาน (Employee Portal)</h2>
             <p className="page-subtitle">
               ยินดีต้อนรับคุณ {user?.name} · คุณสามารถจัดการและส่งมอบงานที่ได้รับมอบหมายได้ที่นี่
@@ -90,16 +90,15 @@ export default function EmployeePage() {
 
           <button
             onClick={fetchMyTasks}
-            className="btn-secondary"
+            className="btn-refresh"
             disabled={loading}
-            title="รีเฟรชข้อมูลงาน"
+            title="รีเฟรชข้อมูลภารกิจ"
           >
             <RefreshCw size={16} className={loading ? 'spinner' : ''} />
-            <span>รีเฟรช</span>
+            <span>รีเฟรชข้อมูล</span>
           </button>
         </div>
 
-        {/* ข้อความแจ้งเตือนสถานะ */}
         {errorMessage && (
           <div className="error-alert">
             <AlertCircle size={18} />
@@ -114,49 +113,66 @@ export default function EmployeePage() {
           </div>
         )}
 
-        {/* สรุปงานของตนเอง */}
-        <div className="stats-grid">
-          <div className="stat-card">
-            <div className="stat-icon-wrapper blue">
-              <FolderKanban size={22} />
+        {/* แถบสถิติสไตล์ส้ม Pawtry Thailand */}
+        <div className="pawtry-stats-strip">
+          <div className="stats-strip-item">
+            <div className="strip-icon-box">
+              <FolderKanban size={26} />
             </div>
-            <div className="stat-data">
-              <span className="stat-value">{tasks.length}</span>
-              <span className="stat-label">งานของฉันทั้งหมด</span>
-            </div>
-          </div>
-
-          <div className="stat-card">
-            <div className="stat-icon-wrapper amber">
-              <Clock size={22} />
-            </div>
-            <div className="stat-data">
-              <span className="stat-value">{todoCount}</span>
-              <span className="stat-label">งานที่ต้องทำ (To Do)</span>
+            <div className="strip-content">
+              <span className="strip-value">{tasks.length} ภารกิจ</span>
+              <span className="strip-label">ภารกิจที่ได้รับมอบหมาย</span>
             </div>
           </div>
 
-          <div className="stat-card">
-            <div className="stat-icon-wrapper green">
-              <CheckCircle2 size={22} />
+          <div className="stats-divider"></div>
+
+          <div className="stats-strip-item">
+            <div className="strip-icon-box">
+              <Clock size={26} />
             </div>
-            <div className="stat-data">
-              <span className="stat-value">{doneCount}</span>
-              <span className="stat-label">งานที่เสร็จแล้ว (Done)</span>
+            <div className="strip-content">
+              <span className="strip-value">{todoCount} งาน</span>
+              <span className="strip-label">ที่ต้องดำเนินการ (To Do)</span>
+            </div>
+          </div>
+
+          <div className="stats-divider"></div>
+
+          <div className="stats-strip-item">
+            <div className="strip-icon-box">
+              <CheckCircle2 size={26} />
+            </div>
+            <div className="strip-content">
+              <span className="strip-value">{doneCount} งาน</span>
+              <span className="strip-label">สำเร็จเรียบร้อย (Done)</span>
+            </div>
+          </div>
+
+          <div className="stats-divider"></div>
+
+          <div className="stats-strip-item">
+            <div className="strip-icon-box">
+              <Sparkles size={26} />
+            </div>
+            <div className="strip-content">
+              <span className="strip-value">
+                {tasks.length > 0 ? Math.round((doneCount / tasks.length) * 100) : 0}%
+              </span>
+              <span className="strip-label">อัตราความสำเร็จ (Rate)</span>
             </div>
           </div>
         </div>
 
         {/* การ์ดรายการงาน */}
-        <div className="card task-list-card">
+        <div className="pawtry-card task-list-card">
           <div className="card-header flex-between">
             <div className="card-header-title">
-              <FolderKanban size={20} className="icon-blue" />
+              <FolderKanban size={22} className="icon-pawtry-navy" />
               <h3>รายการงานที่ได้รับมอบหมาย</h3>
-              <span className="permission-pill employee">เฉพาะงานของฉัน</span>
+              <span className="permission-pill employee">💼 เฉพาะงานของฉัน</span>
             </div>
 
-            {/* ตัวกรองสถานะ Filter */}
             <div className="filter-group">
               <Filter size={16} className="filter-icon" />
               <div className="filter-pill-container">
@@ -187,7 +203,7 @@ export default function EmployeePage() {
 
           {loading ? (
             <div className="loading-state">
-              <Loader2 className="spinner" size={32} />
+              <Loader2 className="spinner" size={36} />
               <p>กำลังดึงข้อมูลงานของคุณผ่าน Mock API...</p>
             </div>
           ) : filteredTasks.length === 0 ? (
@@ -205,8 +221,8 @@ export default function EmployeePage() {
                   <tr>
                     <th style={{ width: '80px' }}>ID</th>
                     <th>ชื่องาน (Task Title)</th>
-                    <th style={{ width: '130px' }}>สถานะ</th>
-                    <th style={{ width: '180px' }}>วันที่สร้าง</th>
+                    <th style={{ width: '140px' }}>สถานะ</th>
+                    <th style={{ width: '180px' }}>วันที่มอบหมาย</th>
                     <th style={{ width: '180px', textAlign: 'center' }}>การดำเนินการ</th>
                   </tr>
                 </thead>
@@ -225,7 +241,7 @@ export default function EmployeePage() {
                         </td>
                         <td>
                           <span
-                            className={`status-badge ${isDone ? 'status-done' : 'status-todo'}`}
+                            className={`status-badge-pawtry ${isDone ? 'status-done' : 'status-todo'}`}
                           >
                             {isDone ? '✓ Done' : '⏳ To Do'}
                           </span>
@@ -242,16 +258,16 @@ export default function EmployeePage() {
                               id={`mark-done-btn-${task.id}`}
                               onClick={() => handleMarkDone(task)}
                               disabled={isUpdating}
-                              className="btn-mark-done"
+                              className="btn-mark-done-pawtry"
                             >
                               {isUpdating ? (
                                 <>
                                   <Loader2 size={14} className="spinner" />
-                                  <span>กำลังอัปเดต...</span>
+                                  <span>กำลังบันทึก...</span>
                                 </>
                               ) : (
                                 <>
-                                  <Check size={14} />
+                                  <Check size={16} />
                                   <span>เปลี่ยนเป็น Done</span>
                                 </>
                               )}

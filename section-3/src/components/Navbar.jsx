@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, ShieldAlert, CheckCircle, UserCheck } from 'lucide-react';
+import { LogOut, ShieldAlert, Sparkles } from 'lucide-react';
 
 export default function Navbar() {
   const { user, logout, routeNotice, clearRouteNotice } = useAuth();
@@ -15,21 +15,27 @@ export default function Navbar() {
     <>
       <header className="navbar">
         <div className="navbar-container">
+          {/* Logo & Brand Identity สไตล์ Pawtry Thailand */}
           <div className="navbar-brand">
-            <span className="brand-logo">🛡️</span>
-            <div>
-              <h1 className="brand-title">Project Access Control</h1>
-              <p className="brand-subtitle">ระบบจัดการสิทธิ์และงานโครงการ</p>
+            <div className="brand-logo-container">
+              <span className="paw-icon">🐾</span>
+              <span className="brand-pawtry">Pawtry</span>
+              <span className="brand-thailand">thailand</span>
+            </div>
+            <div className="brand-divider"></div>
+            <div className="brand-system-tag">
+              <span className="system-title">Task Access Control</span>
+              <span className="system-badge">Internal System</span>
             </div>
           </div>
 
           {user && (
             <div className="navbar-user">
-              <div className="user-profile">
+              <div className="user-profile-card">
                 <span className="user-avatar">{user.avatar || '👤'}</span>
-                <div className="user-info">
+                <div className="user-meta">
                   <span className="user-name">{user.name}</span>
-                  <div className="user-role-badge-wrapper">
+                  <div className="user-tags">
                     <span className={`role-badge ${user.role === 'admin' ? 'role-admin' : 'role-employee'}`}>
                       {user.role === 'admin' ? '👑 Admin' : '💼 Employee'}
                     </span>
@@ -38,6 +44,7 @@ export default function Navbar() {
                 </div>
               </div>
 
+              {/* ปุ่ม Logout สไตล์ส้ม Pawtry */}
               <button onClick={handleLogout} className="btn-logout" title="ออกจากระบบ">
                 <LogOut size={16} />
                 <span>ออกจากระบบ</span>
@@ -47,7 +54,7 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* แถบแจ้งเตือนเมื่อเกิดกรณี Route Guard Redirect */}
+      {/* แถบแจ้งเตือนเมื่อเกิด Route Guard Intercept */}
       {routeNotice && (
         <div className="route-alert-banner">
           <div className="route-alert-content">

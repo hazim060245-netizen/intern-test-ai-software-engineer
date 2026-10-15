@@ -11,7 +11,9 @@ import {
   Loader2,
   AlertCircle,
   RefreshCw,
-  FolderGit2
+  FolderGit2,
+  ShieldCheck,
+  Check
 } from 'lucide-react';
 
 export default function AdminPage() {
@@ -24,11 +26,9 @@ export default function AdminPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  // Form State สำหรับสร้าง Task
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [selectedAssignee, setSelectedAssignee] = useState('');
 
-  // โหลดข้อมูล Task และพนักงานทั้งหมด
   const loadData = async () => {
     setLoadingTasks(true);
     setErrorMessage('');
@@ -53,7 +53,6 @@ export default function AdminPage() {
     loadData();
   }, []);
 
-  // สร้าง Task ใหม่
   const handleCreateTask = async (e) => {
     e.preventDefault();
     if (!newTaskTitle.trim()) {
@@ -71,12 +70,9 @@ export default function AdminPage() {
         user
       );
 
-      // อัปเดตรายการทันที (Optimistic/Direct State Update)
       setTasks((prev) => [result.task, ...prev]);
       setNewTaskTitle('');
       setSuccessMessage(`สร้าง Task "${result.task.title}" สำเร็จเรียบร้อย!`);
-
-      // ซ่อนข้อความแจ้งเตือนความสำเร็จหลัง 3 วินาที
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
       setErrorMessage(err.message || 'เกิดข้อผิดพลาดในการสร้าง Task');
@@ -85,7 +81,6 @@ export default function AdminPage() {
     }
   };
 
-  // Admin เปลี่ยนสถานะ Task (สามารถเปลี่ยนได้ทั้ง To Do และ Done)
   const handleToggleStatus = async (task) => {
     const nextStatus = task.status === 'Done' ? 'To Do' : 'Done';
     setUpdatingTaskId(task.id);
@@ -116,26 +111,29 @@ export default function AdminPage() {
       <Navbar />
 
       <main className="main-content">
-        <div className="page-header">
+        {/* Banner Section ด้านบนสไตล์ Pawtry */}
+        <div className="page-header-banner">
           <div>
-            <h2 className="page-title">แดชบอร์ดผู้ดูแลระบบ (Admin Dashboard)</h2>
+            <div className="section-pill-tag">
+              <span>🐾 PAWTRY MANAGEMENT CONSOLE</span>
+            </div>
+            <h2 className="page-title">แดชบอร์ดผู้ดูแลระบบ (Admin Portal)</h2>
             <p className="page-subtitle">
-              จัดการโครงการ, สร้าง Task ใหม่, และมอบหมายงานให้พนักงานทั้งหมด
+              จัดการโครงการ, สร้างภารกิจใหม่, และมอบหมายงานให้พนักงานทุกคนในเครือข่าย Pawtry Thailand
             </p>
           </div>
 
           <button
             onClick={loadData}
-            className="btn-secondary"
+            className="btn-refresh"
             disabled={loadingTasks}
-            title="รีเฟรชข้อมูล"
+            title="รีเฟรชข้อมูลล่าสุด"
           >
             <RefreshCw size={16} className={loadingTasks ? 'spinner' : ''} />
-            <span>รีเฟรช</span>
+            <span>รีเฟรชข้อมูล</span>
           </button>
         </div>
 
-        {/* ข้อความแจ้งเตือนสถานะการทำงาน */}
         {errorMessage && (
           <div className="error-alert">
             <AlertCircle size={18} />
@@ -150,57 +148,73 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* สรุปตัวเลขสถิติภาพรวม */}
-        <div className="stats-grid">
-          <div className="stat-card">
-            <div className="stat-icon-wrapper blue">
-              <ListTodo size={22} />
+        {/* แถบสถิติสไตล์ส้ม Pawtry Thailand (ตามหน้าเว็บจริง) */}
+        <div className="pawtry-stats-strip">
+          <div className="stats-strip-item">
+            <div className="strip-icon-box">
+              <ListTodo size={26} />
             </div>
-            <div className="stat-data">
-              <span className="stat-value">{tasks.length}</span>
-              <span className="stat-label">Tasks ทั้งหมดในระบบ</span>
-            </div>
-          </div>
-
-          <div className="stat-card">
-            <div className="stat-icon-wrapper amber">
-              <Clock size={22} />
-            </div>
-            <div className="stat-data">
-              <span className="stat-value">{todoCount}</span>
-              <span className="stat-label">รอดำเนินการ (To Do)</span>
+            <div className="strip-content">
+              <span className="strip-value">{tasks.length} งาน</span>
+              <span className="strip-label">ภารกิจทั้งหมดในระบบ</span>
             </div>
           </div>
 
-          <div className="stat-card">
-            <div className="stat-icon-wrapper green">
-              <CheckCircle2 size={22} />
+          <div className="stats-divider"></div>
+
+          <div className="stats-strip-item">
+            <div className="strip-icon-box">
+              <Clock size={26} />
             </div>
-            <div className="stat-data">
-              <span className="stat-value">{doneCount}</span>
-              <span className="stat-label">เสร็จสิ้นแล้ว (Done)</span>
+            <div className="strip-content">
+              <span className="strip-value">{todoCount} งาน</span>
+              <span className="strip-label">กำลังดำเนินการ (To Do)</span>
+            </div>
+          </div>
+
+          <div className="stats-divider"></div>
+
+          <div className="stats-strip-item">
+            <div className="strip-icon-box">
+              <CheckCircle2 size={26} />
+            </div>
+            <div className="strip-content">
+              <span className="strip-value">{doneCount} งาน</span>
+              <span className="strip-label">ส่งมอบสำเร็จแล้ว (Done)</span>
+            </div>
+          </div>
+
+          <div className="stats-divider"></div>
+
+          <div className="stats-strip-item">
+            <div className="strip-icon-box">
+              <ShieldCheck size={26} />
+            </div>
+            <div className="strip-content">
+              <span className="strip-value">100% Secure</span>
+              <span className="strip-label">Access Control Rule</span>
             </div>
           </div>
         </div>
 
-        {/* ส่วนที่ 1: ฟอร์มสร้าง Task ใหม่ */}
-        <div className="card create-task-card">
+        {/* ฟอร์มสร้าง Task ใหม่ */}
+        <div className="pawtry-card create-task-card">
           <div className="card-header">
             <div className="card-header-title">
-              <PlusCircle size={20} className="icon-blue" />
+              <PlusCircle size={22} className="icon-pawtry-orange" />
               <h3>สร้าง Task ใหม่ (มอบหมายงาน)</h3>
             </div>
-            <span className="permission-pill admin">สิทธิ์: Admin เท่านั้น</span>
+            <span className="permission-pill admin">👑 สิทธิ์: Admin เท่านั้น</span>
           </div>
 
           <form onSubmit={handleCreateTask} className="create-task-form">
             <div className="form-row">
               <div className="form-group flex-2">
-                <label htmlFor="task-title-input">ชื่อ Task / รายละเอียดงาน</label>
+                <label htmlFor="task-title-input">ชื่องาน / รายละเอียดโครงการ</label>
                 <input
                   id="task-title-input"
                   type="text"
-                  placeholder="เช่น ตรวจสอบความถูกต้องของ Business Logic..."
+                  placeholder="เช่น ตรวจสอบสูตรอาหารสัตว์เลี้ยง OEM ล็อตใหม่..."
                   value={newTaskTitle}
                   onChange={(e) => setNewTaskTitle(e.target.value)}
                   disabled={creating}
@@ -229,7 +243,7 @@ export default function AdminPage() {
                 <button
                   type="submit"
                   id="create-task-button"
-                  className="btn-primary"
+                  className="btn-pawtry-orange"
                   disabled={creating || !newTaskTitle.trim()}
                 >
                   {creating ? (
@@ -239,7 +253,7 @@ export default function AdminPage() {
                     </>
                   ) : (
                     <>
-                      <PlusCircle size={16} />
+                      <PlusCircle size={18} />
                       <span>สร้าง Task</span>
                     </>
                   )}
@@ -249,20 +263,20 @@ export default function AdminPage() {
           </form>
         </div>
 
-        {/* ส่วนที่ 2: รายการ Task ทั้งหมดในระบบ */}
-        <div className="card task-list-card">
+        {/* ตารางแสดง Task ทั้งหมด */}
+        <div className="pawtry-card task-list-card">
           <div className="card-header">
             <div className="card-header-title">
-              <FolderGit2 size={20} className="icon-purple" />
-              <h3>รายการ Task ทั้งหมดในโครงการ</h3>
+              <FolderGit2 size={22} className="icon-pawtry-navy" />
+              <h3>รายการภารกิจทั้งหมดในโครงการ</h3>
             </div>
-            <span className="task-count-tag">{tasks.length} รายการ</span>
+            <span className="count-pill">{tasks.length} ภารกิจ</span>
           </div>
 
           {loadingTasks ? (
             <div className="loading-state">
-              <Loader2 className="spinner" size={32} />
-              <p>กำลังดึงข้อมูล Tasks ผ่าน Mock API...</p>
+              <Loader2 className="spinner" size={36} />
+              <p>กำลังดึงข้อมูลภารกิจผ่าน Mock API...</p>
             </div>
           ) : tasks.length === 0 ? (
             <div className="empty-state">
@@ -275,10 +289,10 @@ export default function AdminPage() {
                   <tr>
                     <th style={{ width: '80px' }}>ID</th>
                     <th>ชื่องาน (Task Title)</th>
-                    <th style={{ width: '220px' }}>ผู้รับผิดชอบ</th>
-                    <th style={{ width: '130px' }}>สถานะ</th>
-                    <th style={{ width: '170px' }}>สร้างเมื่อ</th>
-                    <th style={{ width: '150px', textAlign: 'center' }}>การจัดการ (Admin)</th>
+                    <th style={{ width: '240px' }}>ผู้รับผิดชอบ</th>
+                    <th style={{ width: '140px' }}>สถานะ</th>
+                    <th style={{ width: '180px' }}>วันที่สร้าง</th>
+                    <th style={{ width: '160px', textAlign: 'center' }}>การจัดการ (Admin)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -300,7 +314,7 @@ export default function AdminPage() {
                           </div>
                         </td>
                         <td>
-                          <span className={`status-badge ${isDone ? 'status-done' : 'status-todo'}`}>
+                          <span className={`status-badge-pawtry ${isDone ? 'status-done' : 'status-todo'}`}>
                             {isDone ? '✓ Done' : '⏳ To Do'}
                           </span>
                         </td>
@@ -309,7 +323,7 @@ export default function AdminPage() {
                           <button
                             onClick={() => handleToggleStatus(task)}
                             disabled={isUpdating}
-                            className={`btn-action ${isDone ? 'btn-reopen' : 'btn-mark-done'}`}
+                            className={`btn-action-pill ${isDone ? 'btn-reopen' : 'btn-mark-done'}`}
                             title={isDone ? 'Admin สามารถเปลี่ยนกลับเป็น To Do ได้' : 'เปลี่ยนสถานะเป็น Done'}
                           >
                             {isUpdating ? (
